@@ -3,10 +3,20 @@
     package="com.example.shuvojit.shuvojit_geofences">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <!-- Permissions -->
+    <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="com.google.android.gms.permission.ACTIVITY_RECOGNITION" />
+    <!-- Required for getting image -->
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 
     <application
+        android:name=".App"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -20,13 +30,13 @@
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
 
-        <activity android:name=".example01.MainActivity">
-
-        </activity>
+        <activity android:name=".example01.MainActivity" />
 
         <service android:name=".example01.service.GeofenceTransitionsIntentService" />
+        <service android:name=".example02.GeofenceTrasitionService" />
 
-        <activity android:name=".example02.MainActivity02">
+        <activity android:name=".example02.MainActivity02" />
+        <activity android:name=".Implementaion.IMplementation">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

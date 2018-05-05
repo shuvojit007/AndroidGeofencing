@@ -60,6 +60,8 @@ public class MainActivity02 extends AppCompatActivity implements  GoogleApiClien
         ResultCallback<Status> {
 
     private static final String TAG = MainActivity02.class.getSimpleName();
+    private static final int ERROR_DIALOG_REQUEST = 9001;
+    private static final int PLACE_PICKER_REQUEST = 1;
 
     private GoogleMap map;
     private GoogleApiClient googleApiClient;
@@ -72,7 +74,6 @@ public class MainActivity02 extends AppCompatActivity implements  GoogleApiClien
 
 
     private static final String NOTIFICATION_MSG = "NOTIFICATION MSG";
-
     // Create a Intent send by the notification
     public static Intent makeNotificationIntent(Context context, String msg) {
         Intent intent = new Intent(context, MainActivity02.class);
@@ -80,8 +81,7 @@ public class MainActivity02 extends AppCompatActivity implements  GoogleApiClien
         return intent;
     }
 
-    private static final int ERROR_DIALOG_REQUEST = 9001;
-    private static final int PLACE_PICKER_REQUEST = 1;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -270,7 +270,7 @@ public class MainActivity02 extends AppCompatActivity implements  GoogleApiClien
 
 
 
-
+    //todo===========startLocationUpdates called by getLastKnownLocation====//
     private LocationRequest locationRequest;
     // Defined in mili seconds.
     // This number in extremely low, and should be used only for debug
@@ -287,7 +287,7 @@ public class MainActivity02 extends AppCompatActivity implements  GoogleApiClien
         if (checkPermission())
             LocationServices.FusedLocationApi.requestLocationUpdates(googleApiClient, locationRequest, this);
     }
-
+    //todo===========startLocationUpdates called by getLastKnownLocation====//
 
 
 
@@ -411,6 +411,7 @@ public class MainActivity02 extends AppCompatActivity implements  GoogleApiClien
     private void startGeofence() {
         Log.i(TAG, "startGeofence()");
         if (geoFenceMarker != null) {
+            Toast.makeText(this, "New Geo Set", Toast.LENGTH_SHORT).show();
             Geofence geofence = createGeofence(geoFenceMarker.getPosition(), GEOFENCE_RADIUS);
             GeofencingRequest geofenceRequest = createGeofenceRequest(geofence);
             addGeofence(geofenceRequest);
@@ -429,8 +430,7 @@ public class MainActivity02 extends AppCompatActivity implements  GoogleApiClien
                 .setRequestId(GEOFENCE_REQ_ID)
                 .setCircularRegion(latLng.latitude, latLng.longitude, radius)
                 .setExpirationDuration(Geofence.NEVER_EXPIRE)
-                .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER
-                        | Geofence.GEOFENCE_TRANSITION_EXIT)
+                .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER)
                 .build();
     }
 
@@ -438,7 +438,10 @@ public class MainActivity02 extends AppCompatActivity implements  GoogleApiClien
     private GeofencingRequest createGeofenceRequest(Geofence geofence) {
         Log.d(TAG, "createGeofenceRequest");
         return new GeofencingRequest.Builder()
-                .setInitialTrigger(GeofencingRequest.INITIAL_TRIGGER_ENTER)
+
+                .setInitialTrigger(GeofencingRequest.INITIAL_TRIGGER_ENTER|
+                        GeofencingRequest.INITIAL_TRIGGER_DWELL
+                |GeofencingRequest.INITIAL_TRIGGER_EXIT)
                 .addGeofence(geofence)
                 .build();
     }
@@ -503,11 +506,12 @@ public class MainActivity02 extends AppCompatActivity implements  GoogleApiClien
         Log.d(TAG, "saveGeofence()");
         SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPref.edit();
-
         editor.putLong(KEY_GEOFENCE_LAT, Double.doubleToRawLongBits(geoFenceMarker.getPosition().latitude));
         editor.putLong(KEY_GEOFENCE_LON, Double.doubleToRawLongBits(geoFenceMarker.getPosition().longitude));
         editor.apply();
     }
+
+
     // Recovering last Geofence marker
     private void recoverGeofenceMarker() {
         Log.d(TAG, "recoverGeofenceMarker");
@@ -544,9 +548,5 @@ public class MainActivity02 extends AppCompatActivity implements  GoogleApiClien
         if (geoFenceLimits != null)
             geoFenceLimits.remove();
     }
-
-
-
-
 
 }
